@@ -10,49 +10,53 @@ export default function CustomCursor() {
     const dot  = dotRef.current!;
     const ring = ringRef.current!;
 
-    let mouseX = -200, mouseY = -200;
-    let ringX  = -200, ringY  = -200;
-    let running = false;
+    let mouseX = -300, mouseY = -300;
+    let ringX  = -300, ringY  = -300;
+    let rafId: number;
+    let visible = false;
 
-    /* ── Position dot exactly on cursor ── */
+    /* Show both elements on first mouse move — more reliable than mouseenter */
+    function show() {
+      if (!visible) {
+        ring.style.opacity = "1";
+        visible = true;
+      }
+    }
+    function hide() {
+      dot.style.opacity  = "0";
+      ring.style.opacity = "0";
+      visible = false;
+    }
+
+    /* Dot tracks exactly */
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
       dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
-      if (!running) startLoop();
+      show();
     };
 
-    /* ── Ring lerp loop — self-terminating ── */
-    const LERP = 0.14;
-    function startLoop() {
-      running = true;
-      requestAnimationFrame(tick);
-    }
+    /* Ring lerp — always-running loop, never self-terminates */
     function tick() {
-      const dx = mouseX - ringX;
-      const dy = mouseY - ringY;
-      ringX += dx * LERP;
-      ringY += dy * LERP;
+      ringX += (mouseX - ringX) * 0.14;
+      ringY += (mouseY - ringY) * 0.14;
       ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-        requestAnimationFrame(tick);
-      } else {
-        running = false;
-      }
+      rafId = requestAnimationFrame(tick);
     }
 
-    /* ── Expand ring on hover ── */
-    const SIZES: Record<string, number> = { default: 40, regular: 72, large: 120 };
+    /* Expand ring on interactive / heading elements */
+    const SIZES = { default: 40, regular: 72, large: 120 } as const;
     function setSize(key: keyof typeof SIZES) {
       const px = `${SIZES[key]}px`;
       ring.style.width  = px;
       ring.style.height = px;
-      dot.style.opacity = key === "default" ? "1" : "0";
+      /* Hide dot when ring is expanded */
+      dot.style.opacity = (key === "default" && visible) ? "1" : "0";
     }
 
     const onOver = (e: MouseEvent) => {
       const el = e.target as Element;
-      if (el.closest("h1, h2, .hero, .tag, .section-label")) {
+      if (el.closest("h1, h2, .hero, .section-label")) {
         setSize("large");
       } else if (el.closest("a, button, [role='button'], .card, .card-glow")) {
         setSize("regular");
@@ -61,26 +65,24 @@ export default function CustomCursor() {
       }
     };
 
-    /* ── Show/hide on enter/leave ── */
-    const onEnter = () => { dot.style.opacity = "1"; ring.style.opacity = "1"; };
-    const onLeave = () => { dot.style.opacity = "0"; ring.style.opacity = "0"; };
-
-    window.addEventListener("mousemove",  onMove);
+    window.addEventListener("mousemove",    onMove);
     document.addEventListener("mouseover",  onOver);
-    document.addEventListener("mouseenter", onEnter);
-    document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("mouseleave", hide);
+    document.addEventListener("mouseenter", show);
+    rafId = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove",  onMove);
+      window.removeEventListener("mousemove",    onMove);
       document.removeEventListener("mouseover",  onOver);
-      document.removeEventListener("mouseenter", onEnter);
-      document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("mouseleave", hide);
+      document.removeEventListener("mouseenter", show);
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <>
-      {/* Dot — rose, no blend mode, tracks exactly */}
+      {/* Dot — rose, snaps to cursor */}
       <div
         ref={dotRef}
         className="cursor-dot"
@@ -93,12 +95,12 @@ export default function CustomCursor() {
           zIndex: 9999,
           pointerEvents: "none",
           opacity: 0,
-          transition: "opacity 0.2s",
+          transition: "opacity 0.15s",
           willChange: "transform",
         }}
       />
 
-      {/* Ring — backdrop-filter: invert(1) inverts content beneath without CPU blend */}
+      {/* Ring — rose border, transparent fill, lerp lag */}
       <div
         ref={ringRef}
         className="cursor-ring"
@@ -107,13 +109,12 @@ export default function CustomCursor() {
           top: 0, left: 0,
           width: 40, height: 40,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.01)",
-          backdropFilter: "invert(1)",
-          WebkitBackdropFilter: "invert(1)",
+          border: "1.5px solid var(--accent)",
+          backgroundColor: "transparent",
           zIndex: 9999,
           pointerEvents: "none",
           opacity: 0,
-          transition: "opacity 0.2s, width 0.25s ease, height 0.25s ease",
+          transition: "opacity 0.15s, width 0.25s ease, height 0.25s ease",
           willChange: "transform",
         }}
       />
