@@ -100,7 +100,7 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* Ring — rose border, transparent fill, lerp lag */}
+      {/* Ring — white fill + mix-blend-mode: difference = inverts colours beneath, no filter */}
       <div
         ref={ringRef}
         className="cursor-ring"
@@ -109,8 +109,8 @@ export default function CustomCursor() {
           top: 0, left: 0,
           width: 40, height: 40,
           borderRadius: "50%",
-          border: "1.5px solid var(--accent)",
-          backgroundColor: "transparent",
+          backgroundColor: "white",
+          mixBlendMode: "difference",
           zIndex: 9999,
           pointerEvents: "none",
           opacity: 0,
