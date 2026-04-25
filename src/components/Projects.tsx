@@ -13,7 +13,7 @@ export default function Projects() {
     active === "All" ? projects : projects.filter((p) => p.tags.includes(active));
 
   return (
-    <section id="projects" className="py-24 px-6">
+    <section id="projects" className="py-16 md:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="reveal-on-scroll mb-4">
           <p className="text-sm font-semibold uppercase tracking-widest accent-text mb-2">

@@ -35,7 +35,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-24 px-6 bg-[var(--surface)]">
+    <section id="contact" className="py-16 md:py-24 px-4 sm:px-6 bg-[var(--surface)]">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="reveal-on-scroll mb-10 text-center">
@@ -52,7 +52,7 @@ export default function Contact() {
         </div>
 
         {/* Quick links */}
-        <div className="reveal-on-scroll flex justify-center gap-6 mb-10">
+        <div className="reveal-on-scroll flex flex-wrap justify-center gap-x-6 gap-y-3 mb-10">
           <a href="mailto:mharshal625@gmail.com"
             className="flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--text)] transition-colors">
             <EnvelopeIcon /> mharshal625@gmail.com

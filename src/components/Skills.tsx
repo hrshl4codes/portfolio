@@ -68,7 +68,7 @@ function SkillIcon({ name }: { name: string }) {
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 px-6 bg-[var(--surface)]">
+    <section id="skills" className="py-16 md:py-24 px-4 sm:px-6 bg-[var(--surface)]">
       <div className="max-w-6xl mx-auto">
         <div className="reveal-on-scroll mb-12">
           <p className="text-sm font-semibold uppercase tracking-widest accent-text mb-2">

@@ -26,7 +26,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 overflow-hidden"
     >
       {/* Subtle grid */}
       <div
@@ -38,16 +38,16 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-12">
 
         {/* Left: text */}
         <div className="flex-1 text-center md:text-left">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[var(--text)] leading-[1.1] mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[var(--text)] leading-[1.1] mb-4">
             Hi, I&apos;m{" "}
             <span className="gradient-text">Harshal Manerikar</span>
           </h1>
 
-          <p className="text-2xl md:text-3xl font-semibold text-[var(--muted)] mb-6">
+          <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-[var(--muted)] mb-6">
             Developer
           </p>
 
@@ -85,7 +85,7 @@ export default function Hero() {
             </button>
 
             <div
-              className="relative w-64 md:w-72"
+              className="relative w-52 sm:w-60 md:w-72"
               style={{
                 aspectRatio: hasPhotos ? photos[photoIndex].aspect : "4/5",
                 transition: "aspect-ratio 0.4s ease",
