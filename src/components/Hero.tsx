@@ -65,10 +65,6 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 flex flex-col items-center md:items-start gap-2 text-[var(--muted)] text-sm">
-            <span>Scroll to explore</span>
-            <span className="animate-bounce text-lg">↓</span>
-          </div>
         </div>
 
         {/* Right: photo carousel */}
@@ -158,6 +154,29 @@ export default function Hero() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Section navigation — pinned to bottom of hero viewport */}
+      <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center gap-3 px-4">
+        <nav className="flex flex-wrap justify-center gap-2">
+          {[
+            { label: "About",      href: "#about"      },
+            { label: "Experience", href: "#experience" },
+            { label: "Projects",   href: "#projects"   },
+            { label: "Skills",     href: "#skills"     },
+            { label: "Contact",    href: "#contact"    },
+          ].map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="px-4 py-1.5 rounded-full text-sm border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)] transition-all duration-200"
+              style={{ backgroundColor: "rgba(255,255,255,0.8)", backdropFilter: "blur(6px)" }}
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+        <span className="animate-bounce text-[var(--muted)] text-base">↓</span>
       </div>
     </section>
   );
