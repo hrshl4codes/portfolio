@@ -14,7 +14,7 @@ export interface Project {
   tags: string[];
   github?: string;
   demo?: string;
-  status: "live" | "in-progress" | "archived";
+  status: "live" | "in-progress" | "archived" | "complete";
 }
 
 export interface Skill {
@@ -26,6 +26,18 @@ export interface SkillGroup {
   category: string;
   icon: string;
   skills: Skill[];
+}
+
+export interface OpenSourceEntry {
+  id: string;
+  title: string;
+  framework: string;
+  frameworkDescription?: string;
+  description: string;
+  stack: string[];
+  github: string;
+  paper?: string;
+  status: "merged" | "open" | "draft";
 }
 
 export interface ContactPayload {

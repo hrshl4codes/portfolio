@@ -9,6 +9,7 @@ const statusLabel: Record<Project["status"], { label: string; color: string }> =
   live:          { label: "Live",        color: "text-emerald-700 bg-emerald-50 border-emerald-200"  },
   "in-progress": { label: "In Progress", color: "text-amber-700 bg-amber-50 border-amber-200"        },
   archived:      { label: "Archived",    color: "text-[#4b5563] bg-[#f1f5f9] border-[#e2e8f0]"      },
+  complete:      { label: "Complete",    color: "text-blue-700 bg-blue-50 border-blue-200"            },
 };
 
 export default function ProjectCard({ project }: Props) {

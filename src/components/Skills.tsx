@@ -36,6 +36,8 @@ const icons: Record<string, string> = {
   "Docker":         `${SI}/docker`,
   "Excel":          `${SI}/microsoftexcel`,
   "CI/CD":          `${SI}/githubactions`,
+  "Streamlit":      `${SI}/streamlit`,
+  "Linux / Shell":  `${SI}/linux`,
 };
 
 function SkillIcon({ name }: { name: string }) {

@@ -31,6 +31,64 @@ export const projects: Project[] = [
     status: "live",
   },
   {
+    id: "stocksense",
+    title: "StockSense",
+    image: "/projects/stocksense.png",
+    problem:
+      "Warehouses operating in isolation hold either too much or too little stock, driving up costs and creating shortage risk. Manual rebalancing is slow, error-prone, and unable to react to changing demand.",
+    solution:
+      "Predictive inventory optimization platform that mines warehouse and order data to forecast demand, calculate inventory pressure, and recommend optimal stock transfers between locations.",
+    stack: {
+      frontend: ["Plotly", "Streamlit"],
+      backend: ["Python", "Pandas", "NumPy"],
+      tools: ["Predictive Analytics"],
+    },
+    features: [
+      "Forecasts demand and surfaces inventory imbalances across 8 warehouses and 32 SKUs",
+      "Stock Pressure Index (SPI) algorithm with transfer-optimization logic",
+      "Interactive dashboard with KPI tracking, demand forecasts, and what-if scenario simulation",
+      "Identified ₹15,250 in potential cost savings; reduced shortage exposure by 25%",
+    ],
+    challenges: [
+      "Designing an SPI metric that balances current stock, reorder thresholds, and predicted demand into a single actionable signal",
+      "Building transfer logic that respects same-category constraints across distributed warehouses",
+      "Translating analytical outputs into a stakeholder-facing dashboard non-technical users can act on",
+    ],
+    tags: ["Python", "ML", "Data Analysis", "Predictive Modeling", "Full-Stack"],
+    github: "https://github.com/hrshl4codes/StockSense",
+    demo: "https://warehousbalancer-harshaltech.streamlit.app",
+    status: "live",
+  },
+  {
+    id: "trader-behaviour-analysis",
+    title: "Trader Behaviour Analysis",
+    image: "/projects/trader-analysis.png",
+    problem:
+      "Crypto trader performance shifts dramatically with market sentiment, but the patterns behind those shifts are obscured by noisy, high-volume trade data and lack of structured behavioural segmentation.",
+    solution:
+      "Data-driven analysis pipeline merging Hyperliquid trader data with the Bitcoin Fear & Greed Index to surface how sentiment regimes affect win rates, risk-taking, and trader behaviour.",
+    stack: {
+      frontend: ["Jupyter"],
+      backend: ["Python", "Pandas", "scikit-learn"],
+      tools: ["Statistical Testing", "Clustering"],
+    },
+    features: [
+      "Cleaned and timestamp-aligned raw trader data with daily sentiment encoding",
+      "Statistical testing across sentiment regimes to validate behavioural shifts",
+      "Trader segmentation via clustering to identify heterogeneous response patterns",
+      "Found that sentiment affects win rates and risk expression more than median profitability",
+    ],
+    challenges: [
+      "Aligning two datasets with different timestamp granularities (per-trade vs daily)",
+      "Avoiding overfitting in segmentation given limited regime samples",
+      "Distinguishing genuine behavioural shifts from random variance in noisy market data",
+    ],
+    tags: ["Python", "ML", "Data Analysis", "Statistical Testing"],
+    github: "https://github.com/hrshl4codes/Trader-Behaviour-Analysis",
+    demo: undefined,
+    status: "complete",
+  },
+  {
     id: "flowsocial",
     title: "FlowSocial",
     image: "/projects/flowsocial.png",
