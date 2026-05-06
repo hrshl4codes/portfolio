@@ -12,6 +12,6 @@ export const openSourceEntries: OpenSourceEntry[] = [
     stack: ["Python", "Flower", "Federated Learning", "PyTorch", "NumPy", "Scientific Computing"],
     github: "https://github.com/flwrlabs/flower/tree/main/baselines/fedht",
     paper: "https://arxiv.org/abs/2101.00052",
-    status: "merged",
+    status: "open",
   },
 ];

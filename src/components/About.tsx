@@ -64,7 +64,7 @@ export default function About() {
             </li>
             <li className="flex gap-3">
               <span className="accent-text shrink-0">→</span>
-              <span>Authored an open-source baseline for <strong className="text-[var(--text)]">Flower</strong>, the federated learning framework — reviewed and merged by core maintainers.</span>
+              <span>Authored an open-source baseline for <strong className="text-[var(--text)]">Flower</strong>, the federated learning framework — PR open and under review by core maintainers.</span>
             </li>
             <li className="flex gap-3">
               <span className="accent-text shrink-0">→</span>
