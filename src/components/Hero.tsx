@@ -38,7 +38,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-12 pb-28 md:pb-0">
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-12 pb-40 md:pb-0">
 
         {/* Left: text */}
         <div className="flex-1 text-center md:text-left">
