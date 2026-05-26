@@ -1,151 +1,121 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ContactPayload } from "@/types";
+import { useState, useEffect } from 'react';
+import { SectionHead, Typewriter } from './Shared';
 
-type FormState = "idle" | "submitting" | "success" | "error";
+interface Bubble {
+  name: string;
+  sub: string;
+  url: string;
+  delay: number;
+  top: string;
+  left: string;
+}
 
-export default function Contact() {
-  const [form, setForm]     = useState<ContactPayload>({ name: "", email: "", message: "" });
-  const [state, setState]   = useState<FormState>("idle");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setState("submitting");
-    setErrorMsg("");
-    try {
-      const res  = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) { setErrorMsg(data.error ?? "Something went wrong."); setState("error"); return; }
-      setState("success");
-      setForm({ name: "", email: "", message: "" });
-    } catch {
-      setErrorMsg("Network error. Please try again.");
-      setState("error");
-    }
-  }
+function ContactBubble({ name, sub, url, delay = 0, active }: Bubble & { active: boolean }) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <section id="contact" className="py-16 md:py-24 px-4 sm:px-6 bg-[var(--surface)]">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="reveal-on-scroll mb-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest accent-text mb-2">
-            Let&apos;s talk
-          </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)]">
-            Get in touch
-          </h2>
-          <p className="mt-3 text-[var(--muted)]">
-            Open to full-time roles, freelance projects, and interesting conversations.
-            I reply within 24 hours.
-          </p>
-        </div>
+    <a
+      href={url}
+      target={url.startsWith('mailto') ? '_self' : '_blank'}
+      rel="noreferrer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      data-hover
+      style={{
+        position: 'relative', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        width: 'clamp(140px, 14vw, 190px)', height: 'clamp(140px, 14vw, 190px)',
+        borderRadius: '50%',
+        border: `1.5px solid ${hovered ? 'var(--mint-soft)' : 'var(--mint)'}`,
+        background: hovered
+          ? 'radial-gradient(circle at center, rgba(94,234,212,0.18) 0%, rgba(8,16,14,0.95) 70%)'
+          : 'radial-gradient(circle at center, rgba(94,234,212,0.04) 0%, var(--bg) 70%)',
+        boxShadow: hovered
+          ? '0 0 40px rgba(94,234,212,0.35), 0 0 80px rgba(94,234,212,0.12), inset 0 0 30px rgba(94,234,212,0.08)'
+          : '0 0 0 rgba(94,234,212,0)',
+        cursor: 'none', textDecoration: 'none',
+        opacity: active ? 1 : 0,
+        transform: active ? `translateY(${hovered ? '-8px' : '0'})` : 'scale(0.6) translateY(20px)',
+        transition: [
+          `opacity .6s ease ${delay}s`,
+          `transform .6s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
+          'box-shadow .25s ease', 'border-color .25s ease', 'background .25s ease',
+        ].join(', '),
+        animation: active ? `bubbleFloat ${3.8 + delay * 2}s ease-in-out ${delay}s infinite` : 'none',
+      }}
+    >
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: hovered ? 'var(--mint)' : 'var(--fg-4)', letterSpacing: '0.04em', marginBottom: '6px', transition: 'color .2s ease' }}>&lt;&gt;</span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(13px, 1.1vw, 16px)', fontWeight: 600, color: hovered ? 'var(--mint-soft)' : 'var(--fg-1)', letterSpacing: '0.04em', transition: 'color .2s ease', textAlign: 'center', lineHeight: 1.3 }}>{name}</span>
+      {sub && (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: hovered ? 'var(--mint)' : 'var(--fg-3)', letterSpacing: '0.1em', marginTop: '4px', transition: 'color .2s ease', textAlign: 'center', maxWidth: '80%', lineHeight: 1.4 }}>{sub}</span>
+      )}
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: hovered ? 'var(--mint)' : 'var(--fg-4)', letterSpacing: '0.04em', marginTop: '6px', transition: 'color .2s ease' }}>&lt;/&gt;</span>
+      {hovered && (
+        <div style={{ position: 'absolute', inset: '-12px', borderRadius: '50%', border: '1px solid rgba(94,234,212,0.2)', pointerEvents: 'none', animation: 'pulseRing 1s ease-in-out infinite' }} />
+      )}
+    </a>
+  );
+}
 
-        {/* Quick links */}
-        <div className="reveal-on-scroll flex flex-wrap justify-center gap-x-6 gap-y-3 mb-10">
-          <a href="mailto:mharshal625@gmail.com"
-            className="flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--text)] transition-colors">
-            <EnvelopeIcon /> mharshal625@gmail.com
-          </a>
-          <a href="https://linkedin.com/in/harshal-m" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--text)] transition-colors">
-            <LinkedInIcon /> LinkedIn
-          </a>
-          <a href="https://github.com/hrshl4codes" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--text)] transition-colors">
-            <GitHubIcon /> GitHub
-          </a>
-        </div>
+const BUBBLES: Bubble[] = [
+  { name: 'LinkedIn', sub: '/in/hrshlm',        url: 'https://www.linkedin.com/in/hrshlm',         delay: 0.4,  top: '0%',  left: '5%'  },
+  { name: 'GitHub',   sub: '/hrshl4codes',       url: 'https://github.com/hrshl4codes',             delay: 0.55, top: '10%', left: '38%' },
+  { name: 'Email',    sub: 'mharshal625@gmail',  url: 'mailto:mharshal625@gmail.com',               delay: 0.7,  top: '52%', left: '18%' },
+  { name: 'Résumé',   sub: 'Download CV',        url: 'https://harshaltech.vercel.app/resume.pdf',  delay: 0.85, top: '46%', left: '55%' },
+];
 
-        {/* Form */}
-        <form
-          onSubmit={onSubmit}
-          className="reveal-on-scroll space-y-5 p-8 rounded-2xl bg-[var(--card)] border border-[var(--border)]"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Field label="Name"  name="name"  type="text"  value={form.name}  onChange={onChange} placeholder="Jane Smith"       required />
-            <Field label="Email" name="email" type="email" value={form.email} onChange={onChange} placeholder="jane@company.com" required />
-          </div>
+const PROMPT = '> establishing_connection... OK';
+const PROMPT_DURATION = PROMPT.length * 45 + 300;
 
-          <div>
-            <label className="block text-sm font-medium text-[#475569] mb-1.5">
-              Message <span className="accent-text">*</span>
-            </label>
-            <textarea
-              name="message" value={form.message} onChange={onChange}
-              rows={5} required placeholder="Tell me about the role or project..."
-              className="w-full px-4 py-3 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors resize-none text-sm"
+export default function Contact({ active }: { active: boolean }) {
+  const [promptDone, setPromptDone] = useState(false);
+
+  useEffect(() => {
+    if (!active) { setPromptDone(false); return; }
+    const t = setTimeout(() => setPromptDone(true), PROMPT_DURATION);
+    return () => clearTimeout(t);
+  }, [active]);
+
+  return (
+    <section className={`section contact${active ? ' active' : ''}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gridTemplateColumns: 'unset' }}>
+      <div style={{ marginBottom: 'clamp(48px, 7vh, 80px)' }}>
+        <SectionHead tag="h2" title="Get in touch" />
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(13px, 1vw, 15px)', color: 'var(--fg-2)', lineHeight: 1.65, marginTop: '18px', maxWidth: '56ch' }}>
+          Open to full-time roles, freelance projects, and interesting conversations.
+          I reply within 24 hours — currently in Mumbai, IST.
+        </p>
+
+        <div style={{
+          marginTop: '24px', fontFamily: 'var(--font-mono)', fontSize: '13px',
+          color: 'var(--mint)', letterSpacing: '0.04em',
+          opacity: active ? 1 : 0, transition: 'opacity .3s ease',
+          minHeight: '20px',
+        }}>
+          {active && (
+            <Typewriter
+              text={PROMPT}
+              speed={45}
+              startDelay={200}
+              showCaret={!promptDone}
             />
-          </div>
-
-          {state === "error" && <p className="text-sm text-red-600">{errorMsg}</p>}
-
-          <button
-            type="submit"
-            disabled={state === "submitting"}
-            className="w-full py-3.5 rounded-lg accent-bg hover:opacity-90 text-white font-medium transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {state === "submitting" ? "Sending…" : "Send message"}
-          </button>
-
-          {state === "success" && (
-            <p className="text-sm text-center text-emerald-600">
-              Message sent! I&apos;ll get back to you soon.
-            </p>
           )}
-        </form>
+          {promptDone && (
+            <span style={{ marginLeft: 8, color: 'var(--mint)', opacity: 0.6, fontSize: '11px' }}>
+              ● ONLINE
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div style={{ position: 'relative', width: '100%', height: 'clamp(320px, 45vh, 480px)', marginTop: '16px' }}>
+        {BUBBLES.map((b) => (
+          <div key={b.name} style={{ position: 'absolute', top: b.top, left: b.left }}>
+            <ContactBubble {...b} active={active && promptDone} />
+          </div>
+        ))}
       </div>
     </section>
-  );
-}
-
-function Field({ label, name, type, value, onChange, placeholder, required }: {
-  label: string; name: string; type: string; value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string; required?: boolean;
-}) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-[#475569] mb-1.5">
-        {label} {required && <span className="accent-text">*</span>}
-      </label>
-      <input
-        type={type} name={name} value={value} onChange={onChange}
-        placeholder={placeholder} required={required}
-        className="w-full px-4 py-3 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors text-sm"
-      />
-    </div>
-  );
-}
-
-function EnvelopeIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 7L2 7" />
-    </svg>
-  );
-}
-function LinkedInIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-function GitHubIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-    </svg>
   );
 }

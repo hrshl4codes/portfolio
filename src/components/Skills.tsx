@@ -1,125 +1,53 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { skillGroups } from "@/data/skills";
-import type { Skill } from "@/types";
+import { SKILLS } from '@/data/skills';
+import type { SkillLevel } from '@/types';
+import { SectionHead, Scrambled } from './Shared';
 
-const levelWidth: Record<Skill["level"], string> = {
-  beginner:     "w-1/3",
-  intermediate: "w-2/3",
-  proficient:   "w-full",
-};
+const FILL: Record<SkillLevel, number> = { confident: 6, building: 4, learning: 2 };
+const TOTAL = 8;
 
-const levelLabel: Record<Skill["level"], string> = {
-  beginner:     "Learning",
-  intermediate: "Building",
-  proficient:   "Confident",
-};
-
-const SI = "https://cdn.simpleicons.org";
-
-const icons: Record<string, string> = {
-  "React.js":       `${SI}/react`,
-  "HTML / CSS":     `${SI}/html5`,
-  "Next.js":        `${SI}/nextdotjs`,
-  "TypeScript":     `${SI}/typescript`,
-  "Python":         `${SI}/python`,
-  "FastAPI":        `${SI}/fastapi`,
-  "REST APIs":      `${SI}/swagger`,
-  "SQL":            `${SI}/postgresql`,
-  "C / C++":        `${SI}/cplusplus`,
-  "LLMs / RAG":     `${SI}/openai/000000`,
-  "scikit-learn":   `${SI}/scikitlearn`,
-  "pandas / numpy": `${SI}/numpy`,
-  "PowerBI":        `${SI}/powerbi`,
-  "Git / GitHub":   `${SI}/github`,
-  "Docker":         `${SI}/docker`,
-  "Excel":          `${SI}/microsoftexcel`,
-  "CI/CD":          `${SI}/githubactions`,
-  "Streamlit":      `${SI}/streamlit`,
-  "Linux / Shell":  `${SI}/linux`,
-};
-
-function SkillIcon({ name }: { name: string }) {
-  const [failed, setFailed] = useState(false);
-  const src = icons[name];
-
-  if (!src || failed) {
-    return (
-      <span className="w-4 h-4 shrink-0 rounded-sm accent-subtle-bg flex items-center justify-center text-[8px] font-bold accent-text">
-        {name[0]}
-      </span>
-    );
-  }
-
+function SkillBar({ level }: { level: SkillLevel }) {
+  const filled = FILL[level];
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt=""
-      aria-hidden="true"
-      width={16}
-      height={16}
-      loading="lazy"
-      className="shrink-0 rounded-sm"
-      style={{ objectFit: "contain" }}
-      onError={() => setFailed(true)}
-    />
+    <span className="skill-bar-chars">
+      [<span className={`skill-filled ${level}`}>{'█'.repeat(filled)}</span>{'░'.repeat(TOTAL - filled)}]
+    </span>
   );
 }
 
-export default function Skills() {
+export default function Skills({ active }: { active: boolean }) {
   return (
-    <section id="skills" className="py-16 md:py-24 px-4 sm:px-6 bg-[var(--surface)]">
-      <div className="max-w-6xl mx-auto">
-        <div className="reveal-on-scroll mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest accent-text mb-2">
-            Capabilities
-          </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)]">
-            Skills
-          </h2>
-          <p className="mt-3 text-[var(--muted)] max-w-lg">
-            Honest ratings. I&apos;d rather show growth trajectory than fake expertise.
-          </p>
-        </div>
+    <section className={`section skills${active ? ' active' : ''}`}>
+      <div>
+        <SectionHead tag="h2" title="My_Skills" />
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skillGroups.map((group) => (
-            <div
-              key={group.category}
-              className="reveal-on-scroll p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-glow"
-            >
-              <div className="flex items-center gap-2 mb-5">
-                <span className="w-1 h-4 rounded-full accent-bg shrink-0" />
-                <h3 className="font-semibold text-[var(--text)]">{group.category}</h3>
-              </div>
-
-              <ul className="space-y-4">
-                {group.skills.map((skill) => (
-                  <li key={skill.name}>
-                    <div className="flex items-center justify-between mb-1.5 gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <SkillIcon name={skill.name} />
-                        <span className="text-sm text-[#475569] truncate">{skill.name}</span>
-                      </div>
-                      <span className="text-xs text-[var(--muted)] shrink-0">{levelLabel[skill.level]}</span>
-                    </div>
-                    <div className="h-1 w-full bg-[var(--border)] rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${levelWidth[skill.level]}`}
-                        style={{
-                          background:
-                            "linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, white))",
-                        }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+      <div className="skills-grid">
+        {SKILLS.map((col, i) => (
+          <div key={col.title} className="skill-col" style={{
+            opacity: active ? 1 : 0,
+            transform: active ? 'translateY(0)' : 'translateY(20px)',
+            transition: `opacity .6s ease ${0.3 + i * 0.1}s, transform .6s ease ${0.3 + i * 0.1}s`,
+          }}>
+            <div className="skill-col-title">
+              <Scrambled text={col.title} active={active} duration={500} delay={400 + i * 150} />
             </div>
-          ))}
-        </div>
+            {col.items.map((it, j) => (
+              <div key={j} className="skill-row">
+                <span className="name">{it.name}</span>
+                <SkillBar level={it.level} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '24px', fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--fg-3)', opacity: active ? 1 : 0, transition: 'opacity .5s ease 1s' }}>
+        <span className="code-tag">{'// '}</span>
+        Honest ratings.{' '}<span style={{ color: 'var(--mint)' }}>Confident</span> = ship-ready,{' '}
+        <span style={{ color: '#FFC76E' }}>Building</span> = working knowledge,{' '}
+        <span style={{ color: 'var(--fg-3)' }}>Learning</span> = active study.
       </div>
     </section>
   );

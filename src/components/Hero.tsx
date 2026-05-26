@@ -1,183 +1,116 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from 'react';
+import { Scrambled } from './Shared';
 
-const photos: { src: string; caption: string; fit?: "cover" | "contain"; aspect: string }[] = [
-  { src: "/photos/photo-1.jpeg", caption: "", aspect: "709/887" },
-  { src: "/photos/photo-2.JPG",  caption: "", aspect: "1/1"     },
+const ROLES = [
+  'AI Native Developer',
+  'Agentic Systems Architect',
+  'Python Automation Dev',
+  'Full-Stack Engineer',
 ];
 
-export default function Hero() {
-  const [photoIndex, setPhotoIndex]   = useState(0);
-  const [photoVisible, setPhotoVisible] = useState(true);
+const TYPE_SPEED   = 60;
+const DELETE_SPEED = 32;
+const PAUSE_MS     = 1800;
+const START_DELAY  = 900;
 
-  function goTo(next: number) {
-    if (photos.length === 0) return;
-    setPhotoVisible(false);
-    setTimeout(() => {
-      setPhotoIndex((next + photos.length) % photos.length);
-      setPhotoVisible(true);
-    }, 250);
-  }
+function CyclingRole({ active }: { active: boolean }) {
+  const [roleIdx, setRoleIdx]   = useState(0);
+  const [displayed, setDisplayed] = useState('');
+  const [phase, setPhase]       = useState<'idle' | 'typing' | 'pausing' | 'deleting'>('idle');
 
-  const hasPhotos = photos.length > 0;
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => setPhase('typing'), START_DELAY);
+    return () => clearTimeout(t);
+  }, [active]);
+
+  useEffect(() => {
+    const target = ROLES[roleIdx];
+
+    if (phase === 'typing') {
+      if (displayed.length >= target.length) {
+        setPhase('pausing');
+        return;
+      }
+      const t = setTimeout(() => setDisplayed(target.slice(0, displayed.length + 1)), TYPE_SPEED);
+      return () => clearTimeout(t);
+    }
+
+    if (phase === 'pausing') {
+      const t = setTimeout(() => setPhase('deleting'), PAUSE_MS);
+      return () => clearTimeout(t);
+    }
+
+    if (phase === 'deleting') {
+      if (displayed.length === 0) {
+        setRoleIdx(i => (i + 1) % ROLES.length);
+        setPhase('typing');
+        return;
+      }
+      const t = setTimeout(() => setDisplayed(d => d.slice(0, -1)), DELETE_SPEED);
+      return () => clearTimeout(t);
+    }
+  }, [phase, displayed, roleIdx]);
+
+  const showCaret = phase === 'typing' || phase === 'pausing';
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 overflow-hidden"
-    >
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+    <span>
+      {displayed}
+      {showCaret && <span className="role-caret" />}
+    </span>
+  );
+}
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-12 pb-40 md:pb-0">
+function OrbitalRing() {
+  return (
+    <div className="orbital">
+      <svg className="rings" viewBox="0 0 420 420">
+        <g className="ring-spinner">
+          <circle cx="210" cy="210" r="200" fill="none" stroke="rgba(94,234,212,0.18)" strokeWidth="1" strokeDasharray="2 6" />
+          <circle cx="10"  cy="210" r="3" fill="var(--mint)" />
+          <circle cx="370" cy="135" r="2" fill="var(--mint-soft)" />
+        </g>
+        <g className="ring-spinner reverse">
+          <circle cx="210" cy="210" r="160" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+          <circle cx="370" cy="210" r="4" fill="var(--bg)" stroke="var(--fg-1)" strokeWidth="1.5" />
+          <circle cx="50"  cy="210" r="3" fill="var(--fg-1)" />
+          <circle cx="210" cy="50"  r="3" fill="var(--mint)" />
+        </g>
+        <circle cx="210" cy="210" r="120" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+      </svg>
+      <div className="logo-glyph">{'</>'}</div>
+      <a className="cv-btn" href="https://harshaltech.vercel.app/resume.pdf" target="_blank" rel="noreferrer">
+        <span className="br">&lt;</span>Download_CV<span className="br">/&gt;</span>
+      </a>
+    </div>
+  );
+}
 
-        {/* Left: text */}
-        <div className="flex-1 text-center md:text-left">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[var(--text)] leading-[1.1] mb-4">
-            Hi, I&apos;m{" "}
-            <span className="gradient-text">Harshal Manerikar</span>
+export default function Hero({ active }: { active: boolean }) {
+  return (
+    <section className={`section hero${active ? ' active' : ''}`} style={{ position: 'relative' }}>
+      <div className="hero-left" style={{ position: 'relative', zIndex: 2 }}>
+        <div className="hero-pre">
+          <span className="tag">&lt;p&gt;</span>This is<span className="tag">&lt;/p&gt;</span>
+        </div>
+        <div className="hero-name">
+          <span className="tag-line">&lt;h1&gt;</span>
+          <h1 className="display-h1">
+            <Scrambled text="Harshal"   active={active} duration={650} delay={200} /><br />
+            <Scrambled text="Manerikar" active={active} duration={750} delay={400} />
           </h1>
-
-          <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-[var(--muted)] mb-6">
-            Developer
-          </p>
-
-          <p className="text-lg text-[#475569] max-w-xl mb-10 leading-relaxed mx-auto md:mx-0">
-            I build scalable web applications end-to-end: polished UIs,
-            production APIs, and ML tools that solve real business problems.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a href="#projects" className="px-8 py-3.5 rounded-lg accent-bg hover:opacity-90 text-white font-medium transition-all duration-200 hover:scale-105">
-              View my work
-            </a>
-            <a href="#contact" className="px-8 py-3.5 rounded-lg border border-[var(--border)] text-[#475569] hover:text-[var(--text)] hover:border-[var(--accent)] font-medium transition-all duration-200">
-              Get in touch
-            </a>
-          </div>
-
+          <span className="tag-line">&lt;/h1&gt;</span>
         </div>
-
-        {/* Right: photo carousel */}
-        <div className="shrink-0 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
-
-            <button
-              onClick={() => goTo(photoIndex - 1)}
-              disabled={!hasPhotos}
-              aria-label="Previous photo"
-              className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)] transition-all duration-200 disabled:opacity-20 disabled:cursor-not-allowed"
-            >
-              ‹
-            </button>
-
-            <div
-              className="relative w-52 sm:w-60 md:w-72"
-              style={{
-                aspectRatio: hasPhotos ? photos[photoIndex].aspect : "4/5",
-                transition: "aspect-ratio 0.4s ease",
-              }}
-            >
-              {/* Accent glow */}
-              <div
-                className="absolute inset-0 rounded-2xl blur-md opacity-30"
-                style={{ backgroundColor: "var(--accent)" }}
-              />
-              <div className="absolute inset-[3px] rounded-2xl bg-white z-10" />
-
-              <div
-                className="absolute inset-[3px] rounded-2xl z-20 overflow-hidden transition-opacity duration-250"
-                style={{ opacity: photoVisible ? 1 : 0 }}
-              >
-                {hasPhotos ? (
-                  <Image
-                    src={photos[photoIndex].src}
-                    alt={photos[photoIndex].caption}
-                    fill
-                    className={photos[photoIndex].fit === "contain" ? "object-contain" : "object-cover"}
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full bg-[var(--border)] flex flex-col items-center justify-center gap-2">
-                    <span className="text-xs text-[var(--muted)] text-center px-6">
-                      Add photos to the<br />array in Hero.tsx
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <button
-              onClick={() => goTo(photoIndex + 1)}
-              disabled={!hasPhotos}
-              aria-label="Next photo"
-              className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)] transition-all duration-200 disabled:opacity-20 disabled:cursor-not-allowed"
-            >
-              ›
-            </button>
-
-          </div>
-
-          <div
-            className="flex flex-col items-center gap-2 transition-opacity duration-250"
-            style={{ opacity: photoVisible ? 1 : 0 }}
-          >
-            <p className="text-sm text-[var(--muted)] text-center min-h-[1.25rem]">
-              {hasPhotos ? photos[photoIndex].caption : ""}
-            </p>
-
-            {photos.length > 1 && (
-              <div className="flex gap-1.5">
-                {photos.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goTo(i)}
-                    aria-label={`Go to photo ${i + 1}`}
-                    className="w-1.5 h-1.5 rounded-full transition-all duration-200"
-                    style={{
-                      backgroundColor:
-                        i === photoIndex ? "var(--accent)" : "var(--border)",
-                      transform: i === photoIndex ? "scale(1.4)" : "scale(1)",
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="hero-role">
+          <span className="tag">&lt;p&gt;</span>
+          <CyclingRole active={active} />
+          <span className="tag">&lt;/p&gt;</span>
         </div>
       </div>
-
-      {/* Section navigation — pinned to bottom of hero viewport */}
-      <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center gap-3 px-4">
-        <nav className="flex flex-wrap justify-center gap-2">
-          {[
-            { label: "About",      href: "#about"      },
-            { label: "Experience", href: "#experience" },
-            { label: "Projects",   href: "#projects"   },
-            { label: "Skills",     href: "#skills"     },
-            { label: "Contact",    href: "#contact"    },
-          ].map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="px-4 py-1.5 rounded-full text-sm border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)] transition-all duration-200"
-              style={{ backgroundColor: "rgba(255,255,255,0.8)", backdropFilter: "blur(6px)" }}
-            >
-              {l.label}
-            </a>
-          ))}
-        </nav>
-        <span className="animate-bounce text-[var(--muted)] text-base">↓</span>
-      </div>
+      <OrbitalRing />
     </section>
   );
 }

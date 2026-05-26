@@ -1,61 +1,88 @@
-export interface Project {
+export interface Section {
   id: string;
-  title: string;
-  image?: string;   // path relative to /public, e.g. "/projects/flowsocial.png"
-  problem: string;
-  solution: string;
-  stack: {
-    frontend: string[];
-    backend: string[];
-    tools: string[];
-  };
-  features: string[];
-  challenges: string[];
-  tags: string[];
-  github?: string;
-  demo?: string;
-  status: "live" | "in-progress" | "archived" | "complete";
+  num: string;
+  label: string;
 }
 
-export interface Skill {
+export type SkillLevel = 'confident' | 'building' | 'learning';
+
+export interface SkillItem {
   name: string;
-  level: "beginner" | "intermediate" | "proficient";
+  level: SkillLevel;
 }
 
-export interface SkillGroup {
-  category: string;
-  icon: string;
-  skills: Skill[];
+export interface SkillCategory {
+  title: string;
+  items: SkillItem[];
+}
+
+export interface ExperienceEntry {
+  date: string;
+  company: string;
+  role: string;
+  body: string;
+  tags: string[];
+}
+
+export interface Project {
+  name: string;
+  status: string;
+  statusClass: string;
+  role: string;
+  color: string;
+  accentBg: string;
+  desc: string;
+  tech: string[];
+  glyph: string;
+  githubUrl: string | null;
+  liveUrl: string | null;
 }
 
 export interface OpenSourceEntry {
-  id: string;
   title: string;
   framework: string;
-  frameworkDescription?: string;
-  description: string;
-  stack: string[];
-  github: string;
-  paper?: string;
-  status: "merged" | "open" | "draft";
+  frameworkDesc: string;
+  body: string;
+  tech: string[];
+  links: { label: string; url: string }[];
+}
+
+export interface AboutMeta {
+  label: string;
+  value: string;
+}
+
+export interface AboutNow {
+  pre: string;
+  bold: string;
+  post: string;
+}
+
+export interface AboutData {
+  intro: string[];
+  meta: AboutMeta[];
+  now: AboutNow[];
+}
+
+export interface ContactChannel {
+  label: string;
+  value: string;
+  url: string;
+  icon: string;
+}
+
+export interface ContactSocial {
+  name: string;
+  url: string;
+}
+
+export interface ContactData {
+  channels: ContactChannel[];
+  socials: ContactSocial[];
 }
 
 export interface ContactPayload {
   name: string;
   email: string;
   message: string;
-}
-
-export type ExperienceType = "education" | "internship" | "work" | "hackathon" | "course" | "oss";
-
-export interface Experience {
-  type: ExperienceType;
-  title: string;          // "B.Tech in Computer Science"
-  organization: string;   // "Institute of Technology"
-  organizationUrl?: string;
-  startDate: string;      // "Aug 2022"
-  endDate: string;        // "May 2026" or "Present"
-  description: string;    // 1-2 sentences
-  tags?: string[];
-  highlights?: string[];  // bullet achievements
 }

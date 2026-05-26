@@ -1,52 +1,46 @@
-import type { SkillGroup } from "@/types";
+import type { SkillCategory } from '@/types';
 
-export const skillGroups: SkillGroup[] = [
+export const SKILLS: SkillCategory[] = [
   {
-    category: "Frontend",
-    icon: "",
-    skills: [
-      { name: "React.js",    level: "proficient"   },
-      { name: "HTML / CSS",  level: "proficient"   },
-      { name: "Next.js",     level: "intermediate" },
-      { name: "TypeScript",  level: "beginner"     },
+    title: 'Frontend',
+    items: [
+      { name: 'React.js',   level: 'confident' },
+      { name: 'HTML / CSS', level: 'confident' },
+      { name: 'Next.js',    level: 'building'  },
+      { name: 'TypeScript', level: 'learning'  },
     ],
   },
   {
-    category: "Backend",
-    icon: "",
-    skills: [
-      { name: "Python",      level: "proficient"   },
-      { name: "FastAPI",     level: "proficient"   },
-      { name: "REST APIs",   level: "proficient"   },
-      { name: "SQL",              level: "intermediate" },
-      { name: "C / C++",          level: "intermediate" },
-      { name: "OAuth 2.0",        level: "intermediate" },
-      { name: "API Integration",  level: "proficient"   },
+    title: 'Backend',
+    items: [
+      { name: 'Python',    level: 'confident' },
+      { name: 'FastAPI',   level: 'confident' },
+      { name: 'REST APIs', level: 'confident' },
+      { name: 'SQL',       level: 'building'  },
+      { name: 'C / C++',   level: 'building'  },
+      { name: 'OAuth 2.0', level: 'building'  },
     ],
   },
   {
-    category: "AI / Data",
-    icon: "",
-    skills: [
-      { name: "LLMs / RAG",           level: "intermediate" },
-      { name: "scikit-learn",         level: "intermediate" },
-      { name: "pandas / numpy",       level: "proficient"   },
-      { name: "PowerBI",              level: "intermediate" },
-      { name: "Predictive Analytics", level: "intermediate" },
-      { name: "Statistical Analysis", level: "intermediate" },
-      { name: "Streamlit",            level: "proficient"   },
+    title: 'AI / Data',
+    items: [
+      { name: 'LLMs / RAG',            level: 'building'  },
+      { name: 'pandas / numpy',        level: 'confident' },
+      { name: 'scikit-learn',          level: 'building'  },
+      { name: 'Streamlit',             level: 'confident' },
+      { name: 'Predictive Analytics',  level: 'building'  },
+      { name: 'Statistical Analysis',  level: 'building'  },
     ],
   },
   {
-    category: "Tools",
-    icon: "",
-    skills: [
-      { name: "Git / GitHub",       level: "proficient"   },
-      { name: "Docker",             level: "beginner"     },
-      { name: "Excel",              level: "intermediate" },
-      { name: "CI/CD",              level: "intermediate" },
-      { name: "Workflow Automation", level: "proficient"  },
-      { name: "Linux / Shell",      level: "intermediate" },
+    title: 'Tools',
+    items: [
+      { name: 'Git / GitHub',   level: 'confident' },
+      { name: 'Workflow Auto',  level: 'confident' },
+      { name: 'CI/CD',          level: 'building'  },
+      { name: 'Docker',         level: 'learning'  },
+      { name: 'Linux / Shell',  level: 'building'  },
+      { name: 'PowerBI',        level: 'building'  },
     ],
   },
 ];
